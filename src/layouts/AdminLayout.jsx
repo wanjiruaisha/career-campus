@@ -1,17 +1,24 @@
 import { Outlet } from "react-router-dom";
 
-export default function AdminLayout() {
-  return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b p-4">
-        <h1 className="text-xl font-semibold">
-          Career Compass Admin
-        </h1>
-      </header>
+import Sidebar from "@/components/admin/Sidebar";
 
-      <main className="p-6">
+function AdminLayout() {
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <Sidebar />
+
+      <main
+        className="
+          min-h-screen
+          p-6
+          md:ml-72
+          lg:p-8
+        "
+      >
         <Outlet />
       </main>
     </div>
   );
 }
+
+export default AdminLayout;
