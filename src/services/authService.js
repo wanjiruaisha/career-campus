@@ -2,27 +2,45 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
+  updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
 
 import { auth } from "@/firebase/firebase";
 
-// Sign Up
-export const signUp = (email, password) => {
-  return createUserWithEmailAndPassword(auth, email, password);
-};
+export async function signUp(fullName, email, password) {
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
 
-// Sign In
-export const signIn = (email, password) => {
-  return signInWithEmailAndPassword(auth, email, password);
-};
+  await updateProfile(userCredential.user, {
+    displayName: fullName,
+  });
 
-// Logout
-export const logout = () => {
+  return userCredential.user;
+}
+
+export async function signIn(email, password) {
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+
+  return userCredential.user;
+}
+
+export function logout() {
   return signOut(auth);
-};
+}
 
-// Listen for auth changes
-export const observeAuthState = (callback) => {
+export function resetPassword(email) {
+  return sendPasswordResetEmail(auth, email);
+}
+
+export function observeAuthState(callback) {
   return onAuthStateChanged(auth, callback);
-};
+}
