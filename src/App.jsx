@@ -11,6 +11,8 @@ import Contact from "@/pages/Contact";
 import Bookmarks from "@/pages/Bookmarks";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
+import ForgotPassword from "@/pages/ForgotPassword";
+
 
 import Dashboard from "@/pages/admin/Dashboard";
 import ManageArticles from "@/pages/admin/ManageArticles";
@@ -29,6 +31,7 @@ export default function App() {
         <Route path="/bookmarks" element={<Bookmarks />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
 
       <Route path="/admin" element={<AdminLayout />}>
