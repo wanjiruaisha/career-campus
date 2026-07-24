@@ -2,19 +2,28 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import { observeAuthState } from "@/services/authService";
-import { clearUser, setUser } from "@/store/authSlice";
+
+import {
+  clearUser,
+  setLoading,
+  setUser,
+} from "@/store/authSlice";
 
 function AuthListener() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Wait for Firebase to confirm whether a user is signed in
+    dispatch(setLoading(true));
+
     const unsubscribe = observeAuthState((user) => {
       if (user) {
         dispatch(
           setUser({
             uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
+            email: user.email || "",
+            displayName: user.displayName || "",
+            photoURL: user.photoURL || "",
           })
         );
       } else {
