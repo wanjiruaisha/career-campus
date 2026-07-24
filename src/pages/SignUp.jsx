@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -19,8 +19,8 @@ import { signUpSchema } from "@/validation/authSchema";
 import {
   signInWithGoogle,
   signUp,
+
 } from "@/services/authService";
-import { setUser } from "@/store/authSlice";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -102,7 +102,6 @@ function getAuthenticationErrorMessage(error) {
 
 function SignUp() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [activeAction, setActiveAction] =
     useState(null);
@@ -132,17 +131,7 @@ function SignUp() {
 
   const isLoading = activeAction !== null;
 
-  function saveUserToRedux(user) {
-    dispatch(
-      setUser({
-        uid: user.uid,
-        displayName: user.displayName || "",
-        email: user.email || "",
-        photoURL: user.photoURL || "",
-      })
-    );
-  }
-
+  
   async function onSubmit(values) {
     try {
       setActiveAction("email");
@@ -153,7 +142,6 @@ function SignUp() {
         values.password
       );
 
-      saveUserToRedux(user);
 
       toast.success(
         `Welcome to Career Compass${
@@ -183,14 +171,16 @@ function SignUp() {
     try {
       setActiveAction("google");
 
-      const user = await signInWithGoogle();
+     const user = await signInWithGoogle();
 
-      saveUserToRedux(user);
+await createUserDocument(
+  user,
+  user.displayName || "Career Explorer"
+);
 
-      toast.success(
-        "Welcome to Career Compass!"
-      );
-
+toast.success(
+  "Welcome to Career Compass!"
+);
       navigate("/");
     } catch (error) {
       console.error(
