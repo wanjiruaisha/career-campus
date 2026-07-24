@@ -25,21 +25,32 @@ googleProvider.setCustomParameters({
 });
 
 /**
- * Creates a Firestore document if one doesn't already exist.
+ * Creates a Firestore user document when one does not exist.
  */
-async function createUserDocument(user) {
-  const userRef = doc(db, "users", user.uid);
+async function createUserDocument(user, fullName = "") {
+  if (!user?.uid) {
+    throw new Error(
+      "Cannot create user document because the user ID is missing."
+    );
+  }
 
-  const userSnap = await getDoc(userRef);
+  const userReference = doc(db, "users", user.uid);
+  const userSnapshot = await getDoc(userReference);
 
-  if (userSnap.exists()) {
-    return userSnap.data();
+  if (userSnapshot.exists()) {
+    return {
+      id: userSnapshot.id,
+      ...userSnapshot.data(),
+    };
   }
 
   const userData = {
     uid: user.uid,
-    fullName: user.displayName || "",
-    email: user.email,
+    fullName:
+      fullName.trim() ||
+      user.displayName ||
+      "",
+    email: user.email || "",
     photoURL: user.photoURL || "",
     role: "user",
     bookmarks: [],
@@ -47,52 +58,64 @@ async function createUserDocument(user) {
     updatedAt: serverTimestamp(),
   };
 
-  await setDoc(userRef, userData);
+  await setDoc(userReference, userData);
 
   return userData;
 }
 
 /**
- * Email & Password Sign Up
+ * Creates an account using email and password.
  */
-export async function signUp(fullName, email, password) {
+export async function signUp(
+  fullName,
+  email,
+  password
+) {
+  const cleanedName = fullName.trim();
+  const cleanedEmail = email.trim().toLowerCase();
+
   const userCredential =
     await createUserWithEmailAndPassword(
       auth,
-      email,
+      cleanedEmail,
       password
     );
 
   const user = userCredential.user;
 
   await updateProfile(user, {
-    displayName: fullName,
+    displayName: cleanedName,
   });
 
-  await createUserDocument({
-    ...user,
-    displayName: fullName,
-  });
+  await createUserDocument(user, cleanedName);
 
   return user;
 }
 
 /**
- * Email & Password Sign In
+ * Signs in using email and password.
  */
 export async function signIn(email, password) {
+  const cleanedEmail = email.trim().toLowerCase();
+
   const userCredential =
     await signInWithEmailAndPassword(
       auth,
-      email,
+      cleanedEmail,
       password
     );
 
-  return userCredential.user;
+  const user = userCredential.user;
+
+  // Creates the Firestore document if this user exists
+  // in Authentication but their document is missing.
+  await createUserDocument(user);
+
+  return user;
 }
 
 /**
- * Google Sign In
+ * Signs in using Google.
  */
 export async function signInWithGoogle() {
   const result = await signInWithPopup(
@@ -108,28 +131,27 @@ export async function signInWithGoogle() {
 }
 
 /**
- * Logout
+ * Signs out the current user.
  */
 export function logout() {
   return signOut(auth);
 }
 
 /**
- * Forgot Password
+ * Sends a password-reset email.
  */
 export function resetPassword(email) {
+  const cleanedEmail = email.trim().toLowerCase();
+
   return sendPasswordResetEmail(
     auth,
-    email
+    cleanedEmail
   );
 }
 
 /**
- * Authentication Listener
+ * Watches Firebase authentication state.
  */
 export function observeAuthState(callback) {
-  return onAuthStateChanged(
-    auth,
-    callback
-  );
+  return onAuthStateChanged(auth, callback);
 }
