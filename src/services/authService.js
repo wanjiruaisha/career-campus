@@ -10,9 +10,12 @@ import {
 } from "firebase/auth";
 
 import {
+  arrayRemove,
+  arrayUnion,
   doc,
   getDoc,
   setDoc,
+  updateDoc,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -171,3 +174,24 @@ export async function getUserProfile(userId) {
   };
 }
 
+/**bookmark management */
+export async function addBookmark(userId, articleId) {
+  const userReference = doc(db, "users", userId);
+
+  await updateDoc(userReference, {
+    bookmarks: arrayUnion(articleId),
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function removeBookmark(
+  userId,
+  articleId
+) {
+  const userReference = doc(db, "users", userId);
+
+  await updateDoc(userReference, {
+    bookmarks: arrayRemove(articleId),
+    updatedAt: serverTimestamp(),
+  });
+}
