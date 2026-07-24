@@ -155,3 +155,19 @@ export function resetPassword(email) {
 export function observeAuthState(callback) {
   return onAuthStateChanged(auth, callback);
 }
+
+/**user profile fetching */
+export async function getUserProfile(userId) {
+  const userReference = doc(db, "users", userId);
+  const userSnapshot = await getDoc(userReference);
+
+  if (!userSnapshot.exists()) {
+    return null;
+  }
+
+  return {
+    id: userSnapshot.id,
+    ...userSnapshot.data(),
+  };
+}
+
