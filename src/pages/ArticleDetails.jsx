@@ -1,22 +1,56 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+
+import { useSelector } from "react-redux";
+
 import {
   ArrowLeft,
+  Bookmark,
+  BookmarkCheck,
   CalendarDays,
   Clock3,
   FileText,
   Loader2,
 } from "lucide-react";
+
 import { toast } from "sonner";
 
 import { getArticleById } from "@/services/articleService";
 
+import {
+  addBookmark,
+  getUserProfile,
+  removeBookmark,
+} from "@/services/authService";
+
+import { Button } from "@/components/ui/button";
+
 function ArticleDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { user, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  const [isBookmarked, setIsBookmarked] =
+    useState(false);
+
+  const [bookmarkLoading, setBookmarkLoading] =
+    useState(false);
 
   useEffect(() => {
     async function loadArticle() {
@@ -33,13 +67,15 @@ function ArticleDetails() {
 
         setArticle(articleData);
       } catch (error) {
-        console.error("Failed to load article:", error);
+        console.error(
+          "Failed to load article:",
+          error
+        );
 
         setNotFound(true);
 
         toast.error(
-          error?.message ||
-            "Failed to load the article. Please try again."
+          "Failed to load the article."
         );
       } finally {
         setLoading(false);
@@ -51,17 +87,49 @@ function ArticleDetails() {
     }
   }, [id]);
 
+  useEffect(() => {
+    async function checkBookmark() {
+      if (!user?.uid || !article?.id) {
+        setIsBookmarked(false);
+        return;
+      }
+
+      try {
+        const profile = await getUserProfile(
+          user.uid
+        );
+
+        const savedArticles =
+          profile?.bookmarks || [];
+
+        setIsBookmarked(
+          savedArticles.includes(article.id)
+        );
+      } catch (error) {
+        console.error(
+          "Failed to check bookmark:",
+          error
+        );
+      }
+    }
+
+    checkBookmark();
+  }, [user?.uid, article?.id]);
+
   const readingTime = useMemo(() => {
     if (!article?.content) {
       return 1;
     }
 
-    const wordCount = article.content
+    const words = article.content
       .trim()
       .split(/\s+/)
       .filter(Boolean).length;
 
-    return Math.max(1, Math.ceil(wordCount / 200));
+    return Math.max(
+      1,
+      Math.ceil(words / 200)
+    );
   }, [article]);
 
   function formatDate(createdAt) {
@@ -85,111 +153,156 @@ function ArticleDetails() {
     }
   }
 
+  async function handleBookmark() {
+    if (!isAuthenticated || !user?.uid) {
+      toast.info(
+        "Sign in to save this article."
+      );
+
+      navigate("/signin");
+      return;
+    }
+
+    try {
+      setBookmarkLoading(true);
+
+      if (isBookmarked) {
+        await removeBookmark(
+          user.uid,
+          article.id
+        );
+
+        setIsBookmarked(false);
+
+        toast.success(
+          "Article removed from bookmarks."
+        );
+      } else {
+        await addBookmark(
+          user.uid,
+          article.id
+        );
+
+        setIsBookmarked(true);
+
+        toast.success(
+          "Article saved to bookmarks."
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Failed to update bookmark:",
+        error
+      );
+
+      toast.error(
+        "Could not update your bookmarks."
+      );
+    } finally {
+      setBookmarkLoading(false);
+    }
+  }
+
   function renderArticleContent(content) {
     if (!content) {
       return null;
     }
 
-    const lines = content.split("\n");
+    return content.split("\n").map(
+      (line, index) => {
+        const text = line.trim();
 
-    return lines.map((line, index) => {
-      const trimmedLine = line.trim();
+        if (!text) {
+          return (
+            <div
+              key={index}
+              className="h-4"
+            />
+          );
+        }
 
-      if (!trimmedLine) {
-        return <div key={index} className="h-4" />;
-      }
+        if (text.startsWith("### ")) {
+          return (
+            <h3
+              key={index}
+              className="mb-3 mt-8 text-xl font-bold"
+            >
+              {text.replace("### ", "")}
+            </h3>
+          );
+        }
 
-      if (trimmedLine.startsWith("### ")) {
+        if (
+          text.startsWith("## ") ||
+          text.startsWith("# ")
+        ) {
+          return (
+            <h2
+              key={index}
+              className="mb-4 mt-12 border-l-4 border-primary pl-4 text-2xl font-bold tracking-tight sm:text-3xl"
+            >
+              {text.replace(/^#{1,2}\s/, "")}
+            </h2>
+          );
+        }
+
+        if (text.startsWith("- ")) {
+          return (
+            <div
+              key={index}
+              className="mb-3 flex items-start gap-3 text-[1.03rem] leading-8 text-foreground/90"
+            >
+              <span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-primary" />
+
+              <span>
+                {text.replace("- ", "")}
+              </span>
+            </div>
+          );
+        }
+
+        const numberedItem = text.match(
+          /^(\d+)\.\s+(.*)/
+        );
+
+        if (numberedItem) {
+          return (
+            <div
+              key={index}
+              className="mb-4 flex items-start gap-4 text-[1.03rem] leading-8 text-foreground/90"
+            >
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                {numberedItem[1]}
+              </span>
+
+              <span>{numberedItem[2]}</span>
+            </div>
+          );
+        }
+
         return (
-          <h3
+          <p
             key={index}
-            className="mb-3 mt-8 text-xl font-bold tracking-tight text-foreground"
+            className="mb-5 text-[1.03rem] leading-8 text-foreground/85 sm:text-[1.08rem]"
           >
-            {trimmedLine.replace("### ", "")}
-          </h3>
+            {text}
+          </p>
         );
       }
-
-      if (trimmedLine.startsWith("## ")) {
-        return (
-          <h2
-            key={index}
-            className="mb-4 mt-12 border-l-4 border-primary pl-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
-          >
-            {trimmedLine.replace("## ", "")}
-          </h2>
-        );
-      }
-
-      if (trimmedLine.startsWith("# ")) {
-        return (
-          <h2
-            key={index}
-            className="mb-4 mt-12 border-l-4 border-primary pl-4 text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
-          >
-            {trimmedLine.replace("# ", "")}
-          </h2>
-        );
-      }
-
-      if (trimmedLine.startsWith("- ")) {
-        return (
-          <div
-            key={index}
-            className="mb-3 flex items-start gap-3 text-[1.03rem] leading-8 text-foreground/90"
-          >
-            <span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-primary" />
-
-            <span>{trimmedLine.replace("- ", "")}</span>
-          </div>
-        );
-      }
-
-      const numberedItem = trimmedLine.match(/^\d+\.\s+(.*)/);
-
-      if (numberedItem) {
-        const number = trimmedLine.split(".")[0];
-
-        return (
-          <div
-            key={index}
-            className="mb-4 flex items-start gap-4 text-[1.03rem] leading-8 text-foreground/90"
-          >
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-              {number}
-            </span>
-
-            <span>{numberedItem[1]}</span>
-          </div>
-        );
-      }
-
-      return (
-        <p
-          key={index}
-          className="mb-5 text-[1.03rem] leading-8 text-foreground/85 sm:text-[1.08rem]"
-        >
-          {trimmedLine}
-        </p>
-      );
-    });
+    );
   }
 
   if (loading) {
     return (
-      <main className="flex min-h-[75vh] items-center justify-center bg-background px-4">
-        <div className="flex flex-col items-center gap-4 text-center">
+      <main className="flex min-h-[75vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
             <Loader2 className="h-7 w-7 animate-spin text-primary" />
           </div>
 
-          <div>
-            <p className="font-semibold">Loading article</p>
-
-            <p className="mt-1 text-sm text-muted-foreground">
-              Preparing your career guide...
-            </p>
-          </div>
+          <p className="text-muted-foreground">
+            Loading career guide...
+          </p>
         </div>
       </main>
     );
@@ -197,8 +310,8 @@ function ArticleDetails() {
 
   if (notFound || !article) {
     return (
-      <main className="flex min-h-[75vh] items-center justify-center bg-background px-4 py-12">
-        <div className="w-full max-w-md rounded-3xl border bg-card p-8 text-center shadow-sm">
+      <main className="flex min-h-[75vh] items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-3xl border bg-card p-8 text-center shadow-lg">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10">
             <FileText className="h-8 w-8 text-primary" />
           </div>
@@ -207,14 +320,14 @@ function ArticleDetails() {
             Article not found
           </h1>
 
-          <p className="mt-3 leading-7 text-muted-foreground">
-            This article may have been removed, changed to a
-            draft, or is no longer available.
+          <p className="mt-3 text-muted-foreground">
+            This article may have been removed or
+            changed to a draft.
           </p>
 
           <Link
             to="/articles"
-            className="mt-7 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+            className="mt-7 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Articles
@@ -224,16 +337,17 @@ function ArticleDetails() {
     );
   }
 
-  const publishedDate = formatDate(article.createdAt);
+  const publishedDate = formatDate(
+    article.createdAt
+  );
 
   return (
-    <main className="min-h-screen bg-background">
-      {/* Soft page introduction background */}
+    <main className="min-h-screen">
       <section className="border-b bg-gradient-to-b from-primary/10 via-primary/5 to-background">
-        <div className="mx-auto max-w-6xl px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-10">
+        <div className="mx-auto max-w-6xl px-4 pb-14 pt-8 sm:px-6">
           <Link
             to="/articles"
-            className="inline-flex items-center gap-2 rounded-lg px-1 py-2 text-sm font-semibold text-primary transition hover:gap-3"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Articles
@@ -260,7 +374,7 @@ function ArticleDetails() {
               </span>
             </div>
 
-            <h1 className="mt-6 text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="mt-6 text-3xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               {article.title}
             </h1>
 
@@ -269,14 +383,37 @@ function ArticleDetails() {
                 {article.summary}
               </p>
             )}
+
+            <Button
+              type="button"
+              variant={
+                isBookmarked
+                  ? "default"
+                  : "outline"
+              }
+              disabled={bookmarkLoading}
+              onClick={handleBookmark}
+              className="mt-7 h-11 rounded-xl px-5"
+            >
+              {bookmarkLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : isBookmarked ? (
+                <BookmarkCheck className="mr-2 h-4 w-4" />
+              ) : (
+                <Bookmark className="mr-2 h-4 w-4" />
+              )}
+
+              {isBookmarked
+                ? "Saved to Bookmarks"
+                : "Save Article"}
+            </Button>
           </header>
         </div>
       </section>
 
       <article className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        {/* Main thumbnail */}
         {article.thumbnail && (
-          <div className="-mt-1 overflow-hidden rounded-2xl border bg-muted shadow-xl shadow-blue-950/10 sm:rounded-3xl dark:shadow-none">
+          <div className="overflow-hidden rounded-3xl border bg-muted shadow-xl shadow-blue-950/10 dark:shadow-none">
             <img
               src={article.thumbnail}
               alt={article.title}
@@ -285,8 +422,7 @@ function ArticleDetails() {
           </div>
         )}
 
-        {/* Reading area */}
-        <div className="mx-auto mt-12 max-w-3xl sm:mt-16">
+        <div className="mx-auto mt-14 max-w-3xl">
           <div className="mb-10 flex items-center gap-4">
             <div className="h-px flex-1 bg-border" />
 
@@ -297,22 +433,21 @@ function ArticleDetails() {
             <div className="h-px flex-1 bg-border" />
           </div>
 
-          <div>{renderArticleContent(article.content)}</div>
+          {renderArticleContent(article.content)}
 
-          {/* End of article */}
-          <div className="mt-14 rounded-2xl border bg-primary/5 p-6 text-center sm:p-8">
-            <h2 className="text-xl font-bold">
+          <div className="mt-14 rounded-3xl border bg-gradient-to-br from-primary/10 to-indigo-500/5 p-7 text-center sm:p-9">
+            <h2 className="text-2xl font-bold">
               Keep exploring your possibilities
             </h2>
 
             <p className="mx-auto mt-3 max-w-xl leading-7 text-muted-foreground">
-              Discover more Career Compass guides to learn about
-              different careers, skills, and education pathways.
+              Discover more guides about careers,
+              education pathways, and useful skills.
             </p>
 
             <Link
               to="/articles"
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground"
             >
               Explore More Articles
             </Link>
