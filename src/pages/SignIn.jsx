@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -22,7 +22,7 @@ import {
   signInWithGoogle,
 } from "@/services/authService";
 
-import { setUser } from "@/store/authSlice";
+
 
 import { Button } from "@/components/ui/button";
 
@@ -112,7 +112,6 @@ function getAuthenticationErrorMessage(error) {
 
 function SignIn() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const [activeAction, setActiveAction] =
     useState(null);
@@ -135,17 +134,7 @@ function SignIn() {
 
   const isLoading = activeAction !== null;
 
-  function saveUserToRedux(user) {
-    dispatch(
-      setUser({
-        uid: user.uid,
-        displayName: user.displayName || "",
-        email: user.email || "",
-        photoURL: user.photoURL || "",
-      })
-    );
-  }
-
+  
   async function onSubmit(values) {
     try {
       setActiveAction("email");
@@ -155,7 +144,6 @@ function SignIn() {
         values.password
       );
 
-      saveUserToRedux(user);
 
       toast.success(
         user.displayName
@@ -187,7 +175,6 @@ function SignIn() {
 
       const user = await signInWithGoogle();
 
-      saveUserToRedux(user);
 
       toast.success(
         user.displayName
