@@ -7,6 +7,7 @@ import {
   deleteDoc,
   doc,
   query,
+  where,
   orderBy,
   serverTimestamp,
 } from "firebase/firestore";
@@ -115,4 +116,34 @@ export async function deleteArticle(id) {
     console.error("Error deleting article:", error);
     throw error;
   }
+}
+
+/**get published articles */
+export async function getPublishedArticles() {
+  const publishedArticlesQuery = query(
+    collection(db, "articles"),
+    where("status", "==", "Published")
+  );
+
+  const snapshot = await getDocs(
+    publishedArticlesQuery
+  );
+
+  const articles = snapshot.docs.map(
+    (articleDocument) => ({
+      id: articleDocument.id,
+      ...articleDocument.data(),
+    })
+  );
+
+  // Show the newest articles first
+  return articles.sort((firstArticle, secondArticle) => {
+    const firstDate =
+      firstArticle.createdAt?.toMillis?.() || 0;
+
+    const secondDate =
+      secondArticle.createdAt?.toMillis?.() || 0;
+
+    return secondDate - firstDate;
+  });
 }
