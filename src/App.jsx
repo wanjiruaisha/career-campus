@@ -12,6 +12,8 @@ import Bookmarks from "@/pages/Bookmarks";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import ForgotPassword from "@/pages/ForgotPassword";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import AdminRoute from "@/components/AdminRoute";
 
 
 import Dashboard from "@/pages/admin/Dashboard";
@@ -34,12 +36,42 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
 
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="articles" element={<ManageArticles />} />
-        <Route path="articles/new" element={<AddArticle />} />
-        <Route path="articles/edit/:id" element={<EditArticle />} />
-      </Route>
+     {/* Bookmarks — any signed-in user */}
+<Route
+  path="bookmarks"
+  element={
+    <ProtectedRoute>
+      <Bookmarks />
+    </ProtectedRoute>
+  }
+/>
+
+{/* Admin pages — admin user only */}
+<Route
+  path="/admin"
+  element={
+    <AdminRoute>
+      <AdminLayout />
+    </AdminRoute>
+  }
+>
+  <Route index element={<Dashboard />} />
+
+  <Route
+    path="articles"
+    element={<ManageArticles />}
+  />
+
+  <Route
+    path="articles/new"
+    element={<AddArticle />}
+  />
+
+  <Route
+    path="articles/edit/:id"
+    element={<EditArticle />}
+  />
+</Route>
     </Routes>
   );
 }
