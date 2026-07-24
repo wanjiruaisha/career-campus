@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { observeAuthState } from "@/services/authService";
+import {
+  getUserProfile,
+  observeAuthState,
+} from "@/services/authService";
 
 import {
   clearUser,
@@ -13,23 +16,47 @@ function AuthListener() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Wait for Firebase to confirm whether a user is signed in
     dispatch(setLoading(true));
 
-    const unsubscribe = observeAuthState((user) => {
-      if (user) {
-        dispatch(
-          setUser({
-            uid: user.uid,
-            email: user.email || "",
-            displayName: user.displayName || "",
-            photoURL: user.photoURL || "",
-          })
-        );
-      } else {
-        dispatch(clearUser());
+    const unsubscribe = observeAuthState(
+      async (firebaseUser) => {
+        if (!firebaseUser) {
+          dispatch(clearUser());
+          return;
+        }
+
+        try {
+          dispatch(setLoading(true));
+
+          const profile = await getUserProfile(
+            firebaseUser.uid
+          );
+
+          dispatch(
+            setUser({
+              uid: firebaseUser.uid,
+              email: firebaseUser.email || "",
+              displayName:
+                profile?.fullName ||
+                firebaseUser.displayName ||
+                "",
+              photoURL:
+                profile?.photoURL ||
+                firebaseUser.photoURL ||
+                "",
+              role: profile?.role || "user",
+            })
+          );
+        } catch (error) {
+          console.error(
+            "Failed to restore user:",
+            error
+          );
+
+          dispatch(clearUser());
+        }
       }
-    });
+    );
 
     return unsubscribe;
   }, [dispatch]);
