@@ -1,27 +1,14 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
-import {
-  ArrowRight,
-  BookOpen,
-  FileText,
-  Loader2,
-  Search,
-} from "lucide-react";
+import { ArrowRight, BookOpen, FileText, Loader2, Search } from "lucide-react";
 
 import { toast } from "sonner";
 
 import { getPublishedArticles } from "@/services/articleService";
 
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 import { Input } from "@/components/ui/input";
 
@@ -30,27 +17,39 @@ function Articles() {
   const [loading, setLoading] = useState(true);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] =
-    useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const categoryFromUrl = searchParams.get("category") || "All";
+
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromUrl);
+
+  function handleCategoryChange(category) {
+    setSelectedCategory(category);
+
+    const updatedParams = new URLSearchParams(searchParams);
+
+    if (category === "All") {
+      updatedParams.delete("category");
+    } else {
+      updatedParams.set("category", category);
+    }
+
+    setSearchParams(updatedParams);
+  }
 
   useEffect(() => {
     async function loadArticles() {
       try {
         setLoading(true);
 
-        const articleData =
-          await getPublishedArticles();
+        const articleData = await getPublishedArticles();
 
         setArticles(articleData);
       } catch (error) {
-        console.error(
-          "Failed to load published articles:",
-          error
-        );
+        console.error("Failed to load published articles:", error);
 
         toast.error(
-          error?.message ||
-            "Failed to load articles. Please try again."
+          error?.message || "Failed to load articles. Please try again.",
         );
       } finally {
         setLoading(false);
@@ -65,33 +64,27 @@ function Articles() {
       .map((article) => article.category)
       .filter(Boolean);
 
-    return [
-      "All",
-      ...new Set(availableCategories),
-    ].sort((firstCategory, secondCategory) => {
-      if (firstCategory === "All") {
-        return -1;
-      }
+    return ["All", ...new Set(availableCategories)].sort(
+      (firstCategory, secondCategory) => {
+        if (firstCategory === "All") {
+          return -1;
+        }
 
-      if (secondCategory === "All") {
-        return 1;
-      }
+        if (secondCategory === "All") {
+          return 1;
+        }
 
-      return firstCategory.localeCompare(
-        secondCategory
-      );
-    });
+        return firstCategory.localeCompare(secondCategory);
+      },
+    );
   }, [articles]);
 
   const filteredArticles = useMemo(() => {
-    const cleanedSearchTerm = searchTerm
-      .trim()
-      .toLowerCase();
+    const cleanedSearchTerm = searchTerm.trim().toLowerCase();
 
     return articles.filter((article) => {
       const matchesCategory =
-        selectedCategory === "All" ||
-        article.category === selectedCategory;
+        selectedCategory === "All" || article.category === selectedCategory;
 
       const searchableContent = [
         article.title,
@@ -104,17 +97,11 @@ function Articles() {
 
       const matchesSearch =
         cleanedSearchTerm === "" ||
-        searchableContent.includes(
-          cleanedSearchTerm
-        );
+        searchableContent.includes(cleanedSearchTerm);
 
       return matchesCategory && matchesSearch;
     });
-  }, [
-    articles,
-    searchTerm,
-    selectedCategory,
-  ]);
+  }, [articles, searchTerm, selectedCategory]);
 
   function formatDate(createdAt) {
     if (!createdAt) {
@@ -139,7 +126,7 @@ function Articles() {
 
   function clearFilters() {
     setSearchTerm("");
-    setSelectedCategory("All");
+    handleCategoryChange("All");
   }
 
   return (
@@ -156,10 +143,9 @@ function Articles() {
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            Discover career paths, required skills,
-            education routes, and practical guidance
-            to help you make confident decisions about
-            your future.
+            Discover career paths, required skills, education routes, and
+            practical guidance to help you make confident decisions about your
+            future.
           </p>
         </div>
       </section>
@@ -174,9 +160,7 @@ function Articles() {
               <Input
                 type="search"
                 value={searchTerm}
-                onChange={(event) =>
-                  setSearchTerm(event.target.value)
-                }
+                onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Search careers or topics..."
                 aria-label="Search articles"
                 className="h-12 pl-11"
@@ -185,22 +169,13 @@ function Articles() {
 
             <select
               value={selectedCategory}
-              onChange={(event) =>
-                setSelectedCategory(
-                  event.target.value
-                )
-              }
+              onChange={(event) => handleCategoryChange(event.target.value)}
               aria-label="Filter articles by category"
               className="h-12 w-full rounded-md border border-input bg-background px-3 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring"
             >
               {categories.map((category) => (
-                <option
-                  key={category}
-                  value={category}
-                >
-                  {category === "All"
-                    ? "All Categories"
-                    : category}
+                <option key={category} value={category}>
+                  {category === "All" ? "All Categories" : category}
                 </option>
               ))}
             </select>
@@ -228,117 +203,100 @@ function Articles() {
             </h2>
 
             <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-              Published Career Compass articles will
-              appear here.
+              Published Career Compass articles will appear here.
             </p>
           </div>
         )}
 
         {/* No matching search results */}
-        {!loading &&
-          articles.length > 0 &&
-          filteredArticles.length === 0 && (
-            <div className="flex min-h-72 flex-col items-center justify-center rounded-2xl border border-dashed px-6 text-center">
-              <Search className="h-11 w-11 text-muted-foreground" />
+        {!loading && articles.length > 0 && filteredArticles.length === 0 && (
+          <div className="flex min-h-72 flex-col items-center justify-center rounded-2xl border border-dashed px-6 text-center">
+            <Search className="h-11 w-11 text-muted-foreground" />
 
-              <h2 className="mt-5 text-xl font-semibold">
-                No matching articles
-              </h2>
+            <h2 className="mt-5 text-xl font-semibold">No matching articles</h2>
 
-              <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                Try another search term or choose a
-                different category.
-              </p>
+            <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+              Try another search term or choose a different category.
+            </p>
 
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="mt-5 rounded-md bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
-              >
-                Clear Filters
-              </button>
-            </div>
-          )}
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="mt-5 rounded-md bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
 
         {/* Article results */}
-        {!loading &&
-          filteredArticles.length > 0 && (
-            <>
-              <div className="mb-6 flex items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold">
-                    Career Guides
-                  </h2>
+        {!loading && filteredArticles.length > 0 && (
+          <>
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold">Career Guides</h2>
 
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {filteredArticles.length}{" "}
-                    {filteredArticles.length === 1
-                      ? "article"
-                      : "articles"}{" "}
-                    found
-                  </p>
-                </div>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {filteredArticles.length}{" "}
+                  {filteredArticles.length === 1 ? "article" : "articles"} found
+                </p>
               </div>
+            </div>
 
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredArticles.map((article) => (
-                  <article key={article.id}>
-                    <Card className="group flex h-full flex-col overflow-hidden border-border/70 transition duration-200 hover:-translate-y-1 hover:shadow-lg">
-                      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                        {article.thumbnail ? (
-                          <img
-                            src={article.thumbnail}
-                            alt={`${article.title} thumbnail`}
-                            loading="lazy"
-                            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center">
-                            <FileText className="h-10 w-10 text-muted-foreground" />
-                          </div>
-                        )}
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredArticles.map((article) => (
+                <article key={article.id}>
+                  <Card className="group flex h-full flex-col overflow-hidden border-border/70 transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                      {article.thumbnail ? (
+                        <img
+                          src={article.thumbnail}
+                          alt={`${article.title} thumbnail`}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center">
+                          <FileText className="h-10 w-10 text-muted-foreground" />
+                        </div>
+                      )}
 
-                        {article.category && (
-                          <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-xs font-semibold text-blue-600 shadow-sm backdrop-blur dark:text-blue-400">
-                            {article.category}
-                          </span>
-                        )}
-                      </div>
+                      {article.category && (
+                        <span className="absolute left-4 top-4 rounded-full bg-background/95 px-3 py-1 text-xs font-semibold text-blue-600 shadow-sm backdrop-blur dark:text-blue-400">
+                          {article.category}
+                        </span>
+                      )}
+                    </div>
 
-                      <CardContent className="flex flex-1 flex-col p-5">
-                        {formatDate(
-                          article.createdAt
-                        ) && (
-                          <p className="mb-2 text-xs text-muted-foreground">
-                            {formatDate(
-                              article.createdAt
-                            )}
-                          </p>
-                        )}
-
-                        <h3 className="line-clamp-2 text-xl font-bold leading-7">
-                          {article.title}
-                        </h3>
-
-                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
-                          {article.summary}
+                    <CardContent className="flex flex-1 flex-col p-5">
+                      {formatDate(article.createdAt) && (
+                        <p className="mb-2 text-xs text-muted-foreground">
+                          {formatDate(article.createdAt)}
                         </p>
+                      )}
 
-                        <Link
-                          to={`/articles/${article.id}`}
-                          className="mt-6 inline-flex items-center gap-2 self-start text-sm font-semibold text-blue-600 transition hover:gap-3 hover:text-blue-700 dark:text-blue-400"
-                        >
-                          Read article
+                      <h3 className="line-clamp-2 text-xl font-bold leading-7">
+                        {article.title}
+                      </h3>
 
-                          <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </CardContent>
-                    </Card>
-                  </article>
-                ))}
-              </div>
-            </>
-          )}
+                      <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                        {article.summary}
+                      </p>
+
+                      <Link
+                        to={`/articles/${article.id}`}
+                        className="mt-6 inline-flex items-center gap-2 self-start text-sm font-semibold text-blue-600 transition hover:gap-3 hover:text-blue-700 dark:text-blue-400"
+                      >
+                        Read article
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
       </section>
     </main>
   );
