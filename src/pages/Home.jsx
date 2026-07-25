@@ -25,24 +25,20 @@ import { getPublishedArticles } from "@/services/articleService";
 const categories = [
   {
     title: "Technology",
-    description:
-      "Explore software, data, cybersecurity, and digital careers.",
+    description: "Explore software, data, cybersecurity, and digital careers.",
     icon: Laptop,
-    iconStyle:
-      "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+    iconStyle: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
   },
   {
     title: "Medicine",
     description:
       "Discover careers focused on healthcare and patient wellbeing.",
     icon: HeartPulse,
-    iconStyle:
-      "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
+    iconStyle: "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
   },
   {
     title: "Engineering",
-    description:
-      "Learn about careers that design, build, and improve systems.",
+    description: "Learn about careers that design, build, and improve systems.",
     icon: Wrench,
     iconStyle:
       "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
@@ -65,11 +61,9 @@ const categories = [
   },
   {
     title: "Creative Arts",
-    description:
-      "Discover careers in design, media, writing, and visual arts.",
+    description: "Discover careers in design, media, writing, and visual arts.",
     icon: Palette,
-    iconStyle:
-      "bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300",
+    iconStyle: "bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300",
   },
 ];
 
@@ -95,9 +89,7 @@ const benefits = [
 ];
 
 function Home() {
-  const { isAuthenticated } = useSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,19 +99,13 @@ function Home() {
       try {
         setLoading(true);
 
-        const publishedArticles =
-          await getPublishedArticles();
+        const publishedArticles = await getPublishedArticles();
 
         setArticles(publishedArticles);
       } catch (error) {
-        console.error(
-          "Failed to load homepage articles:",
-          error
-        );
+        console.error("Failed to load homepage articles:", error);
 
-        toast.error(
-          "Some homepage articles could not be loaded."
-        );
+        toast.error("Some homepage articles could not be loaded.");
       } finally {
         setLoading(false);
       }
@@ -128,10 +114,7 @@ function Home() {
     loadLatestArticles();
   }, []);
 
-  const latestArticles = useMemo(
-    () => articles.slice(0, 3),
-    [articles]
-  );
+  const latestArticles = useMemo(() => articles.slice(0, 3), [articles]);
 
   const featuredArticle = latestArticles[0];
 
@@ -172,7 +155,6 @@ function Home() {
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/70 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm backdrop-blur-md dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300">
               <Sparkles className="h-4 w-4" />
-
               Career guidance built for your future
             </div>
 
@@ -184,10 +166,8 @@ function Home() {
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-8 text-muted-foreground sm:text-lg">
-              Explore career options, understand the
-              skills and education they require, and
-              make more confident decisions about your
-              future.
+              Explore career options, understand the skills and education they
+              require, and make more confident decisions about your future.
             </p>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -196,21 +176,14 @@ function Home() {
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700"
               >
                 Explore Career Guides
-
                 <ArrowRight className="h-4 w-4" />
               </Link>
 
               <Link
-                to={
-                  isAuthenticated
-                    ? "/bookmarks"
-                    : "/signup"
-                }
+                to={isAuthenticated ? "/bookmarks" : "/signup"}
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border bg-background/70 px-6 text-sm font-semibold text-foreground shadow-sm backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-accent"
               >
-                {isAuthenticated
-                  ? "View Bookmarks"
-                  : "Create Free Account"}
+                {isAuthenticated ? "View Bookmarks" : "Create Free Account"}
               </Link>
             </div>
 
@@ -261,7 +234,6 @@ function Home() {
                       className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-200 transition hover:gap-3 hover:text-white"
                     >
                       Read the guide
-
                       <ArrowUpRight className="h-4 w-4" />
                     </Link>
                   </div>
@@ -273,14 +245,12 @@ function Home() {
                   </div>
 
                   <h2 className="mt-5 text-2xl font-bold">
-                    Discover where your interests can
-                    take you
+                    Discover where your interests can take you
                   </h2>
 
                   <p className="mt-3 max-w-sm text-sm leading-6 text-blue-100">
-                    Career Compass gives you practical
-                    information to make your next step
-                    clearer.
+                    Career Compass gives you practical information to make your
+                    next step clearer.
                   </p>
                 </div>
               )}
@@ -294,13 +264,9 @@ function Home() {
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Career guides
-                  </p>
+                  <p className="text-xs text-muted-foreground">Career guides</p>
 
-                  <p className="font-bold">
-                    {articles.length || "Growing"}
-                  </p>
+                  <p className="font-bold">{articles.length || "Growing"}</p>
                 </div>
               </div>
             </div>
@@ -312,13 +278,9 @@ function Home() {
                 </div>
 
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Your journey
-                  </p>
+                  <p className="text-xs text-muted-foreground">Your journey</p>
 
-                  <p className="font-bold">
-                    Starts here
-                  </p>
+                  <p className="font-bold">Starts here</p>
                 </div>
               </div>
             </div>
@@ -339,9 +301,8 @@ function Home() {
             </h2>
 
             <p className="mt-4 leading-7 text-muted-foreground">
-              Start with an area that interests you,
-              then explore the careers and pathways
-              available within it.
+              Start with an area that interests you, then explore the careers
+              and pathways available within it.
             </p>
           </div>
 
@@ -352,7 +313,9 @@ function Home() {
               return (
                 <Link
                   key={category.title}
-                  to="/articles"
+                  to={`/articles?category=${encodeURIComponent(
+                    category.title,
+                  )}`}
                   className="group rounded-2xl border bg-card p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-blue-950/5"
                 >
                   <div
@@ -362,9 +325,7 @@ function Home() {
                   </div>
 
                   <div className="mt-5 flex items-center justify-between gap-4">
-                    <h3 className="text-lg font-bold">
-                      {category.title}
-                    </h3>
+                    <h3 className="text-lg font-bold">{category.title}</h3>
 
                     <ArrowUpRight className="h-5 w-5 text-muted-foreground transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
                   </div>
@@ -395,8 +356,8 @@ function Home() {
               </h2>
 
               <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">
-                Read the latest guides and learn what
-                different career paths really involve.
+                Read the latest guides and learn what different career paths
+                really involve.
               </p>
             </div>
 
@@ -405,7 +366,6 @@ function Home() {
               className="inline-flex items-center gap-2 self-start text-sm font-semibold text-primary transition hover:gap-3 sm:self-auto"
             >
               View all articles
-
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -426,8 +386,7 @@ function Home() {
               </h3>
 
               <p className="mt-2 text-muted-foreground">
-                Published career articles will appear
-                here automatically.
+                Published career articles will appear here automatically.
               </p>
             </div>
           ) : (
@@ -477,7 +436,6 @@ function Home() {
                         className="mt-6 inline-flex items-center gap-2 self-start text-sm font-semibold text-primary transition group-hover:gap-3"
                       >
                         Read career guide
-
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                     </div>
@@ -500,15 +458,12 @@ function Home() {
                 </span>
 
                 <h2 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">
-                  Career decisions feel easier when
-                  you have clear information.
+                  Career decisions feel easier when you have clear information.
                 </h2>
 
                 <p className="mt-5 max-w-xl leading-8 text-blue-100">
-                  Career Compass turns complicated
-                  career information into practical
-                  guides that are easier to understand
-                  and use.
+                  Career Compass turns complicated career information into
+                  practical guides that are easier to understand and use.
                 </p>
               </div>
 
@@ -525,9 +480,7 @@ function Home() {
                         <Icon className="h-5 w-5" />
                       </div>
 
-                      <h3 className="mt-4 font-bold">
-                        {benefit.title}
-                      </h3>
+                      <h3 className="mt-4 font-bold">{benefit.title}</h3>
 
                       <p className="mt-2 text-sm leading-6 text-blue-100">
                         {benefit.description}
@@ -557,9 +510,8 @@ function Home() {
               </h2>
 
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-muted-foreground">
-                Discover careers, compare different
-                paths, and save the guidance that helps
-                you move forward.
+                Discover careers, compare different paths, and save the guidance
+                that helps you move forward.
               </p>
 
               <Link
@@ -567,7 +519,6 @@ function Home() {
                 className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700"
               >
                 Browse Career Guides
-
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
