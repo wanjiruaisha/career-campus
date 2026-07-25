@@ -376,7 +376,7 @@ toast.success(
                   <Input
                     id="fullName"
                     type="text"
-                    placeholder="e.g. Aisha Wanjiku"
+                    placeholder="e.g. Solana Johnson"
                     autoComplete="name"
                     disabled={isLoading}
                     aria-invalid={Boolean(
