@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-const CONTACT_EMAIL = "your-email@example.com";
+const CONTACT_EMAIL = "wanjiruaisha30@gmail.com";
 
 const contactSchema = z.object({
   fullName: z
@@ -359,7 +359,7 @@ Reply email: ${values.email}`
                     <Input
                       id="fullName"
                       type="text"
-                      placeholder="e.g. Aisha Wanjiku"
+                      placeholder="e.g. Solana Johnson"
                       autoComplete="name"
                       disabled={sending}
                       aria-invalid={Boolean(errors.fullName)}
