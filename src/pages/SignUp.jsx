@@ -19,7 +19,7 @@ import { signUpSchema } from "@/validation/authSchema";
 import {
   signInWithGoogle,
   signUp,
-
+  
 } from "@/services/authService";
 
 import { Button } from "@/components/ui/button";
@@ -168,34 +168,34 @@ function SignUp() {
   }
 
   async function handleGoogleSignUp() {
-    try {
-      setActiveAction("google");
+  try {
+    setActiveAction("google");
 
-     const user = await signInWithGoogle();
+    const user = await signInWithGoogle();
 
-await createUserDocument(
-  user,
-  user.displayName || "Career Explorer"
-);
+    toast.success(
+      `Welcome to Career Compass${
+        user.displayName
+          ? `, ${user.displayName.split(" ")[0]}`
+          : ""
+      }!`
+    );
 
-toast.success(
-  "Welcome to Career Compass!"
-);
-      navigate("/");
-    } catch (error) {
-      console.error(
-        "Google signup failed:",
-        error?.code,
-        error?.message
-      );
+    navigate("/");
+  } catch (error) {
+    console.error(
+      "Google signup failed:",
+      error?.code,
+      error?.message
+    );
 
-      toast.error(
-        getAuthenticationErrorMessage(error)
-      );
-    } finally {
-      setActiveAction(null);
-    }
+    toast.error(
+      getAuthenticationErrorMessage(error)
+    );
+  } finally {
+    setActiveAction(null);
   }
+}
 
   return (
     <main className="grid min-h-dvh bg-slate-50 lg:grid-cols-[1.05fr_0.95fr] dark:bg-background">
