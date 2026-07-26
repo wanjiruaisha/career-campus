@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -85,7 +85,7 @@ function Contact() {
     register,
     handleSubmit,
     reset,
-    watch,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(contactSchema),
@@ -98,8 +98,12 @@ function Contact() {
     },
   });
 
-  const message = watch("message") || "";
-
+const message =
+  useWatch({
+    control,
+    name: "message",
+    defaultValue: "",
+  }) || "";
   async function onSubmit(values) {
     try {
       setSending(true);
