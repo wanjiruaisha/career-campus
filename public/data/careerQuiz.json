@@ -1,0 +1,546 @@
+{
+  "title": "Career Compass Interest Quiz",
+  "description": "Answer a few questions to discover career areas that may match your interests, strengths, and preferred working style.",
+  "disclaimer": "This quiz provides general career guidance only. It is not a professional psychological or career assessment.",
+  "results": {
+    "Technology": {
+      "description": "You may enjoy solving digital problems, understanding systems, and creating useful technology.",
+      "careers": [
+        "Software Engineer",
+        "Data Scientist",
+        "Cybersecurity Specialist",
+        "Web Developer"
+      ]
+    },
+    "Medicine": {
+      "description": "You may enjoy supporting people's wellbeing, studying science, and making careful decisions that help others.",
+      "careers": [
+        "Doctor",
+        "Nurse",
+        "Pharmacist",
+        "Medical Laboratory Scientist"
+      ]
+    },
+    "Law": {
+      "description": "You may enjoy analysing information, defending ideas, resolving disagreements, and promoting fairness.",
+      "careers": [
+        "Lawyer",
+        "Legal Researcher",
+        "Compliance Officer",
+        "Policy Analyst"
+      ]
+    },
+    "Business": {
+      "description": "You may enjoy planning, leading projects, identifying opportunities, and developing practical business ideas.",
+      "careers": [
+        "Entrepreneur",
+        "Business Manager",
+        "Marketing Officer",
+        "Project Manager"
+      ]
+    },
+    "Engineering": {
+      "description": "You may enjoy mathematics, practical problem-solving, designing systems, and understanding how things work.",
+      "careers": [
+        "Civil Engineer",
+        "Electrical Engineer",
+        "Mechanical Engineer",
+        "Project Engineer"
+      ]
+    },
+    "Creative Arts": {
+      "description": "You may enjoy visual communication, storytelling, original ideas, and expressing messages creatively.",
+      "careers": [
+        "Graphic Designer",
+        "Photographer",
+        "Content Creator",
+        "Creative Director"
+      ]
+    },
+    "Education": {
+      "description": "You may enjoy explaining ideas, supporting people's development, mentoring others, and encouraging learning.",
+      "careers": [
+        "Teacher",
+        "School Counsellor",
+        "Lecturer",
+        "Curriculum Developer"
+      ]
+    },
+    "Finance": {
+      "description": "You may enjoy working with numbers, evaluating information, managing resources, and making evidence-based decisions.",
+      "careers": [
+        "Financial Analyst",
+        "Banker",
+        "Accountant",
+        "Investment Analyst"
+      ]
+    },
+    "Agriculture": {
+      "description": "You may enjoy nature, food production, practical fieldwork, sustainability, and community development.",
+      "careers": [
+        "Agricultural Officer",
+        "Agribusiness Manager",
+        "Farm Manager",
+        "Agricultural Researcher"
+      ]
+    }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "Which activity sounds most satisfying to you?",
+      "options": [
+        {
+          "id": "q1a",
+          "text": "Building an application or solving a computer problem",
+          "scores": {
+            "Technology": 2,
+            "Engineering": 1
+          }
+        },
+        {
+          "id": "q1b",
+          "text": "Helping someone improve their health or wellbeing",
+          "scores": {
+            "Medicine": 2,
+            "Education": 1
+          }
+        },
+        {
+          "id": "q1c",
+          "text": "Turning an idea into a successful business",
+          "scores": {
+            "Business": 2,
+            "Finance": 1
+          }
+        },
+        {
+          "id": "q1d",
+          "text": "Creating an image, story, video, or visual design",
+          "scores": {
+            "Creative Arts": 2,
+            "Education": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "question": "Which group of subjects interests you most?",
+      "options": [
+        {
+          "id": "q2a",
+          "text": "Mathematics, physics, and technical drawing",
+          "scores": {
+            "Engineering": 2,
+            "Technology": 1
+          }
+        },
+        {
+          "id": "q2b",
+          "text": "Biology, chemistry, and health science",
+          "scores": {
+            "Medicine": 2,
+            "Agriculture": 1
+          }
+        },
+        {
+          "id": "q2c",
+          "text": "Languages, history, debate, and social studies",
+          "scores": {
+            "Law": 2,
+            "Education": 1
+          }
+        },
+        {
+          "id": "q2d",
+          "text": "Business, accounting, economics, and mathematics",
+          "scores": {
+            "Finance": 2,
+            "Business": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Which working environment would you prefer?",
+      "options": [
+        {
+          "id": "q3a",
+          "text": "A modern technology office or computer laboratory",
+          "scores": {
+            "Technology": 2,
+            "Finance": 1
+          }
+        },
+        {
+          "id": "q3b",
+          "text": "A hospital, clinic, or healthcare organisation",
+          "scores": {
+            "Medicine": 2,
+            "Education": 1
+          }
+        },
+        {
+          "id": "q3c",
+          "text": "A courtroom, legal office, or government institution",
+          "scores": {
+            "Law": 2,
+            "Business": 1
+          }
+        },
+        {
+          "id": "q3d",
+          "text": "A farm, research station, or outdoor project",
+          "scores": {
+            "Agriculture": 2,
+            "Engineering": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "question": "Which problem would you most enjoy solving?",
+      "options": [
+        {
+          "id": "q4a",
+          "text": "Making a slow or repetitive task automatic",
+          "scores": {
+            "Technology": 2,
+            "Engineering": 1
+          }
+        },
+        {
+          "id": "q4b",
+          "text": "Finding a way to improve people's health",
+          "scores": {
+            "Medicine": 2,
+            "Education": 1
+          }
+        },
+        {
+          "id": "q4c",
+          "text": "Resolving a disagreement fairly",
+          "scores": {
+            "Law": 2,
+            "Education": 1
+          }
+        },
+        {
+          "id": "q4d",
+          "text": "Helping a small business attract more customers",
+          "scores": {
+            "Business": 2,
+            "Finance": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "question": "Which result would make you feel most proud?",
+      "options": [
+        {
+          "id": "q5a",
+          "text": "Seeing a structure or system I designed work properly",
+          "scores": {
+            "Engineering": 2,
+            "Technology": 1
+          }
+        },
+        {
+          "id": "q5b",
+          "text": "Helping someone understand something difficult",
+          "scores": {
+            "Education": 2,
+            "Medicine": 1
+          }
+        },
+        {
+          "id": "q5c",
+          "text": "Presenting a strong argument supported by evidence",
+          "scores": {
+            "Law": 2,
+            "Creative Arts": 1
+          }
+        },
+        {
+          "id": "q5d",
+          "text": "Creating a financial plan that improves performance",
+          "scores": {
+            "Finance": 2,
+            "Business": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "Which project would you choose to lead?",
+      "options": [
+        {
+          "id": "q6a",
+          "text": "Developing a mobile application",
+          "scores": {
+            "Technology": 2,
+            "Creative Arts": 1
+          }
+        },
+        {
+          "id": "q6b",
+          "text": "Launching a new product or service",
+          "scores": {
+            "Business": 2,
+            "Engineering": 1
+          }
+        },
+        {
+          "id": "q6c",
+          "text": "Preparing a budget and analysing spending",
+          "scores": {
+            "Finance": 2,
+            "Business": 1
+          }
+        },
+        {
+          "id": "q6d",
+          "text": "Improving food production on a farm",
+          "scores": {
+            "Agriculture": 2,
+            "Engineering": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "Which strength describes you best?",
+      "options": [
+        {
+          "id": "q7a",
+          "text": "I enjoy logical puzzles and understanding systems",
+          "scores": {
+            "Technology": 2,
+            "Finance": 1
+          }
+        },
+        {
+          "id": "q7b",
+          "text": "I am patient and enjoy supporting other people",
+          "scores": {
+            "Education": 2,
+            "Medicine": 1
+          }
+        },
+        {
+          "id": "q7c",
+          "text": "I communicate confidently and defend my ideas",
+          "scores": {
+            "Law": 2,
+            "Business": 1
+          }
+        },
+        {
+          "id": "q7d",
+          "text": "I enjoy building, repairing, and testing things",
+          "scores": {
+            "Engineering": 2,
+            "Agriculture": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "Which task sounds most interesting?",
+      "options": [
+        {
+          "id": "q8a",
+          "text": "Researching data and identifying financial patterns",
+          "scores": {
+            "Finance": 2,
+            "Technology": 1
+          }
+        },
+        {
+          "id": "q8b",
+          "text": "Mentoring students and explaining new ideas",
+          "scores": {
+            "Education": 2,
+            "Creative Arts": 1
+          }
+        },
+        {
+          "id": "q8c",
+          "text": "Developing a visual campaign for a brand",
+          "scores": {
+            "Creative Arts": 2,
+            "Business": 1
+          }
+        },
+        {
+          "id": "q8d",
+          "text": "Inspecting crops, soil, or natural resources",
+          "scores": {
+            "Agriculture": 2,
+            "Engineering": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "question": "What kind of impact would you most like to make?",
+      "options": [
+        {
+          "id": "q9a",
+          "text": "Create technology that makes life easier",
+          "scores": {
+            "Technology": 2,
+            "Engineering": 1
+          }
+        },
+        {
+          "id": "q9b",
+          "text": "Improve people's health and quality of life",
+          "scores": {
+            "Medicine": 2,
+            "Education": 1
+          }
+        },
+        {
+          "id": "q9c",
+          "text": "Protect rights and promote justice",
+          "scores": {
+            "Law": 2,
+            "Business": 1
+          }
+        },
+        {
+          "id": "q9d",
+          "text": "Improve food security and sustainable farming",
+          "scores": {
+            "Agriculture": 2,
+            "Finance": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "question": "Which opportunity would you choose?",
+      "options": [
+        {
+          "id": "q10a",
+          "text": "Launch a small company with a strong business idea",
+          "scores": {
+            "Business": 2,
+            "Technology": 1
+          }
+        },
+        {
+          "id": "q10b",
+          "text": "Help design a bridge, building, or energy system",
+          "scores": {
+            "Engineering": 2,
+            "Agriculture": 1
+          }
+        },
+        {
+          "id": "q10c",
+          "text": "Create the branding and visuals for a campaign",
+          "scores": {
+            "Creative Arts": 2,
+            "Business": 1
+          }
+        },
+        {
+          "id": "q10d",
+          "text": "Evaluate whether an investment is financially sound",
+          "scores": {
+            "Finance": 2,
+            "Law": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "question": "Which responsibility would suit you best?",
+      "options": [
+        {
+          "id": "q11a",
+          "text": "Assessing symptoms and recommending suitable care",
+          "scores": {
+            "Medicine": 2,
+            "Education": 1
+          }
+        },
+        {
+          "id": "q11b",
+          "text": "Planning lessons and supporting learners",
+          "scores": {
+            "Education": 2,
+            "Creative Arts": 1
+          }
+        },
+        {
+          "id": "q11c",
+          "text": "Reviewing evidence and interpreting rules",
+          "scores": {
+            "Law": 2,
+            "Finance": 1
+          }
+        },
+        {
+          "id": "q11d",
+          "text": "Advising farmers about crops and livestock",
+          "scores": {
+            "Agriculture": 2,
+            "Medicine": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "question": "Which type of training sounds most appealing?",
+      "options": [
+        {
+          "id": "q12a",
+          "text": "Laboratory work, healthcare science, and patient care",
+          "scores": {
+            "Medicine": 2,
+            "Agriculture": 1
+          }
+        },
+        {
+          "id": "q12b",
+          "text": "Coding, digital systems, and technical projects",
+          "scores": {
+            "Technology": 2,
+            "Engineering": 1
+          }
+        },
+        {
+          "id": "q12c",
+          "text": "Economics, accounting, and financial analysis",
+          "scores": {
+            "Finance": 2,
+            "Business": 1
+          }
+        },
+        {
+          "id": "q12d",
+          "text": "Design, photography, media, and visual communication",
+          "scores": {
+            "Creative Arts": 2,
+            "Education": 1
+          }
+        }
+      ]
+    }
+  ]
+}
