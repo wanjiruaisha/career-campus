@@ -1,26 +1,17 @@
 import { useEffect, useState } from "react";
-import {
-  Controller,
-  useForm,
-} from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { articleSchema } from "@/validation/articleSchema";
 import { storage } from "@/firebase/firebase";
 
 import {
+  createUniqueFileName,
   getArticleById,
   updateArticle,
 } from "@/services/articleService";
@@ -66,10 +57,8 @@ export default function EditArticle() {
   const [saving, setSaving] = useState(false);
 
   const [newThumbnail, setNewThumbnail] = useState(null);
-  const [existingThumbnail, setExistingThumbnail] =
-    useState("");
-  const [thumbnailPreview, setThumbnailPreview] =
-    useState("");
+  const [existingThumbnail, setExistingThumbnail] = useState("");
+  const [thumbnailPreview, setThumbnailPreview] = useState("");
 
   const {
     register,
@@ -118,10 +107,7 @@ export default function EditArticle() {
       } catch (error) {
         console.error("Failed to load article:", error);
 
-        toast.error(
-          error?.message ||
-            "Failed to load the article."
-        );
+        toast.error(error?.message || "Failed to load the article.");
       } finally {
         setPageLoading(false);
       }
@@ -157,9 +143,7 @@ export default function EditArticle() {
     const maximumSize = 5 * 1024 * 1024;
 
     if (file.size > maximumSize) {
-      toast.error(
-        "The thumbnail must be smaller than 5 MB."
-      );
+      toast.error("The thumbnail must be smaller than 5 MB.");
 
       event.target.value = "";
       return;
@@ -183,32 +167,19 @@ export default function EditArticle() {
 
       // Upload a new image only when the admin selects one
       if (newThumbnail) {
-        const safeFileName = newThumbnail.name
-          .replace(/\s+/g, "-")
-          .replace(/[^a-zA-Z0-9._-]/g, "");
-
-        const uniqueFileName =
-          `${Date.now()}-${safeFileName}`;
-
+        const uniqueFileName = createUniqueFileName(newThumbnail.name);
         const thumbnailReference = ref(
           storage,
-          `article-thumbnails/${uniqueFileName}`
+          `article-thumbnails/${uniqueFileName}`,
         );
 
-        await uploadBytes(
-          thumbnailReference,
-          newThumbnail
-        );
+        await uploadBytes(thumbnailReference, newThumbnail);
 
-        thumbnailUrl = await getDownloadURL(
-          thumbnailReference
-        );
+        thumbnailUrl = await getDownloadURL(thumbnailReference);
       }
 
       if (!thumbnailUrl) {
-        toast.error(
-          "Please select a thumbnail image."
-        );
+        toast.error("Please select a thumbnail image.");
 
         return;
       }
@@ -231,8 +202,7 @@ export default function EditArticle() {
       console.error("Failed to update article:", error);
 
       toast.error(
-        error?.message ||
-          "Failed to update the article. Please try again."
+        error?.message || "Failed to update the article. Please try again.",
       );
     } finally {
       setSaving(false);
@@ -260,23 +230,17 @@ export default function EditArticle() {
               type="button"
               variant="ghost"
               className="px-0"
-              onClick={() =>
-                navigate("/admin/articles")
-              }
+              onClick={() => navigate("/admin/articles")}
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
-
               Back to Articles
             </Button>
           </div>
 
-          <CardTitle className="text-3xl font-bold">
-            Edit Article
-          </CardTitle>
+          <CardTitle className="text-3xl font-bold">Edit Article</CardTitle>
 
           <CardDescription>
-            Update the article information and save your
-            changes.
+            Update the article information and save your changes.
           </CardDescription>
         </CardHeader>
 
@@ -288,10 +252,7 @@ export default function EditArticle() {
           >
             {/* Title */}
             <div className="space-y-2">
-              <label
-                htmlFor="title"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="title" className="text-sm font-medium">
                 Article Title
               </label>
 
@@ -313,9 +274,7 @@ export default function EditArticle() {
 
             {/* Category */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Category
-              </label>
+              <label className="text-sm font-medium">Category</label>
 
               <Controller
                 name="category"
@@ -326,20 +285,13 @@ export default function EditArticle() {
                     onValueChange={field.onChange}
                     disabled={saving}
                   >
-                    <SelectTrigger
-                      aria-invalid={Boolean(
-                        errors.category
-                      )}
-                    >
+                    <SelectTrigger aria-invalid={Boolean(errors.category)}>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
 
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem
-                          key={category}
-                          value={category}
-                        >
+                        <SelectItem key={category} value={category}>
                           {category}
                         </SelectItem>
                       ))}
@@ -357,10 +309,7 @@ export default function EditArticle() {
 
             {/* Summary */}
             <div className="space-y-2">
-              <label
-                htmlFor="summary"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="summary" className="text-sm font-medium">
                 Summary
               </label>
 
@@ -382,10 +331,7 @@ export default function EditArticle() {
 
             {/* Thumbnail */}
             <div className="space-y-3">
-              <label
-                htmlFor="thumbnail"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="thumbnail" className="text-sm font-medium">
                 Thumbnail Image
               </label>
 
@@ -398,8 +344,7 @@ export default function EditArticle() {
               />
 
               <p className="text-sm text-muted-foreground">
-                Leave this empty to keep the current
-                thumbnail.
+                Leave this empty to keep the current thumbnail.
               </p>
 
               {thumbnailPreview && (
@@ -415,10 +360,7 @@ export default function EditArticle() {
 
             {/* Content */}
             <div className="space-y-2">
-              <label
-                htmlFor="content"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="content" className="text-sm font-medium">
                 Article Content
               </label>
 
@@ -440,9 +382,7 @@ export default function EditArticle() {
 
             {/* Status */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Status
-              </label>
+              <label className="text-sm font-medium">Status</label>
 
               <Controller
                 name="status"
@@ -453,22 +393,14 @@ export default function EditArticle() {
                     onValueChange={field.onChange}
                     disabled={saving}
                   >
-                    <SelectTrigger
-                      aria-invalid={Boolean(
-                        errors.status
-                      )}
-                    >
+                    <SelectTrigger aria-invalid={Boolean(errors.status)}>
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
 
                     <SelectContent>
-                      <SelectItem value="Published">
-                        Published
-                      </SelectItem>
+                      <SelectItem value="Published">Published</SelectItem>
 
-                      <SelectItem value="Draft">
-                        Draft
-                      </SelectItem>
+                      <SelectItem value="Draft">Draft</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -487,21 +419,15 @@ export default function EditArticle() {
                 type="button"
                 variant="outline"
                 disabled={saving}
-                onClick={() =>
-                  navigate("/admin/articles")
-                }
+                onClick={() => navigate("/admin/articles")}
               >
                 Cancel
               </Button>
 
-              <Button
-                type="submit"
-                disabled={saving}
-              >
+              <Button type="submit" disabled={saving}>
                 {saving ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-
                     Saving...
                   </>
                 ) : (
