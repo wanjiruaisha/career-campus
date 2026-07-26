@@ -1,11 +1,5 @@
-
 import { useEffect, useState } from "react";
-import {
-  Link,
-  NavLink,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
@@ -37,6 +31,11 @@ const publicLinks = [
     icon: BookOpen,
   },
   {
+    label: "Career Quiz",
+    path: "/career-quiz",
+    icon: Compass,
+  },
+  {
     label: "Contact",
     path: "/contact",
     icon: Mail,
@@ -56,19 +55,15 @@ function Navbar() {
     loading: authLoading,
   } = useSelector((state) => state.auth);
 
-  const [mobileMenuOpen, setMobileMenuOpen] =
-    useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [logoutLoading, setLogoutLoading] =
-    useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const isAdmin = user?.role === "admin";
 
-  const displayName =
-    user?.displayName?.trim() || "Career Explorer";
+  const displayName = user?.displayName?.trim() || "Career Explorer";
 
-  const firstName =
-    displayName.split(" ")[0] || "User";
+  const firstName = displayName.split(" ")[0] || "User";
 
   const initials = displayName
     .split(" ")
@@ -116,18 +111,14 @@ function Navbar() {
     } catch (error) {
       console.error("Logout failed:", error);
 
-      toast.error(
-        "We could not sign you out. Please try again."
-      );
+      toast.error("We could not sign you out. Please try again.");
     } finally {
       setLogoutLoading(false);
     }
   }
 
   function toggleTheme() {
-    setTheme(
-      resolvedTheme === "dark" ? "light" : "dark"
-    );
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }
 
   return (
@@ -159,11 +150,7 @@ function Navbar() {
           aria-label="Main navigation"
           className="hidden items-center gap-1 lg:flex"
         >
-          <NavLink
-            to="/"
-            end
-            className={getNavLinkClasses}
-          >
+          <NavLink to="/" end className={getNavLinkClasses}>
             Home
           </NavLink>
 
@@ -178,19 +165,13 @@ function Navbar() {
           ))}
 
           {isAuthenticated && (
-            <NavLink
-              to="/bookmarks"
-              className={getNavLinkClasses}
-            >
+            <NavLink to="/bookmarks" className={getNavLinkClasses}>
               Bookmarks
             </NavLink>
           )}
 
           {isAuthenticated && isAdmin && (
-            <NavLink
-              to="/admin"
-              className={getNavLinkClasses}
-            >
+            <NavLink to="/admin" className={getNavLinkClasses}>
               Admin Dashboard
             </NavLink>
           )}
@@ -239,9 +220,7 @@ function Navbar() {
                 )}
 
                 <div className="max-w-32">
-                  <p className="truncate text-sm font-semibold">
-                    {firstName}
-                  </p>
+                  <p className="truncate text-sm font-semibold">{firstName}</p>
 
                   <p className="truncate text-xs capitalize text-muted-foreground">
                     {isAdmin ? "Administrator" : "Member"}
@@ -261,7 +240,6 @@ function Navbar() {
                 ) : (
                   <LogOut className="mr-2 h-4 w-4" />
                 )}
-
                 Logout
               </Button>
             </>
@@ -309,15 +287,9 @@ function Navbar() {
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() =>
-              setMobileMenuOpen(
-                (currentValue) => !currentValue
-              )
-            }
+            onClick={() => setMobileMenuOpen((currentValue) => !currentValue)}
             aria-label={
-              mobileMenuOpen
-                ? "Close navigation menu"
-                : "Open navigation menu"
+              mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
             }
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation"
@@ -338,10 +310,7 @@ function Navbar() {
           id="mobile-navigation"
           className="border-t bg-background/95 px-4 py-4 shadow-xl backdrop-blur-xl lg:hidden"
         >
-          <nav
-            aria-label="Mobile navigation"
-            className="mx-auto max-w-7xl"
-          >
+          <nav aria-label="Mobile navigation" className="mx-auto max-w-7xl">
             {isAuthenticated && !authLoading && (
               <div className="mb-4 flex items-center gap-3 rounded-2xl border bg-gradient-to-br from-primary/10 to-indigo-500/5 p-4">
                 {user?.photoURL ? (
@@ -358,25 +327,17 @@ function Navbar() {
                 )}
 
                 <div className="min-w-0">
-                  <p className="truncate font-semibold">
-                    {displayName}
-                  </p>
+                  <p className="truncate font-semibold">{displayName}</p>
 
                   <p className="truncate text-sm capitalize text-muted-foreground">
-                    {isAdmin
-                      ? "Career Compass administrator"
-                      : user?.email}
+                    {isAdmin ? "Career Compass administrator" : user?.email}
                   </p>
                 </div>
               </div>
             )}
 
             <div className="space-y-1">
-              <NavLink
-                to="/"
-                end
-                className={getMobileLinkClasses}
-              >
+              <NavLink to="/" end className={getMobileLinkClasses}>
                 <Compass className="h-5 w-5" />
                 Home
               </NavLink>
@@ -397,20 +358,14 @@ function Navbar() {
               })}
 
               {isAuthenticated && (
-                <NavLink
-                  to="/bookmarks"
-                  className={getMobileLinkClasses}
-                >
+                <NavLink to="/bookmarks" className={getMobileLinkClasses}>
                   <Bookmark className="h-5 w-5" />
                   Bookmarks
                 </NavLink>
               )}
 
               {isAuthenticated && isAdmin && (
-                <NavLink
-                  to="/admin"
-                  className={getMobileLinkClasses}
-                >
+                <NavLink to="/admin" className={getMobileLinkClasses}>
                   <LayoutDashboard className="h-5 w-5" />
                   Admin Dashboard
                 </NavLink>
@@ -437,7 +392,6 @@ function Navbar() {
                 ) : (
                   <LogOut className="mr-2 h-4 w-4" />
                 )}
-
                 Sign Out
               </Button>
             ) : (
@@ -467,4 +421,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
