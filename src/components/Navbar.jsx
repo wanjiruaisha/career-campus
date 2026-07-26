@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
@@ -45,7 +45,6 @@ const publicLinks = [
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -56,13 +55,11 @@ function Navbar() {
   } = useSelector((state) => state.auth);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const [logoutLoading, setLogoutLoading] = useState(false);
 
   const isAdmin = user?.role === "admin";
 
   const displayName = user?.displayName?.trim() || "Career Explorer";
-
   const firstName = displayName.split(" ")[0] || "User";
 
   const initials = displayName
@@ -72,10 +69,9 @@ function Navbar() {
     .map((name) => name[0]?.toUpperCase())
     .join("");
 
-  // Close the mobile menu whenever the route changes.
-  useEffect(() => {
+  function closeMobileMenu() {
     setMobileMenuOpen(false);
-  }, [location.pathname]);
+  }
 
   function getNavLinkClasses({ isActive }) {
     return [
@@ -98,6 +94,8 @@ function Navbar() {
   }
 
   async function handleLogout() {
+    closeMobileMenu();
+
     try {
       setLogoutLoading(true);
 
@@ -127,6 +125,7 @@ function Navbar() {
         {/* Brand */}
         <Link
           to="/"
+          onClick={closeMobileMenu}
           aria-label="Career Compass homepage"
           className="flex min-w-0 items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
@@ -287,7 +286,9 @@ function Navbar() {
             type="button"
             variant="ghost"
             size="icon"
-            onClick={() => setMobileMenuOpen((currentValue) => !currentValue)}
+            onClick={() =>
+              setMobileMenuOpen((currentValue) => !currentValue)
+            }
             aria-label={
               mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
             }
@@ -337,7 +338,12 @@ function Navbar() {
             )}
 
             <div className="space-y-1">
-              <NavLink to="/" end className={getMobileLinkClasses}>
+              <NavLink
+                to="/"
+                end
+                className={getMobileLinkClasses}
+                onClick={closeMobileMenu}
+              >
                 <Compass className="h-5 w-5" />
                 Home
               </NavLink>
@@ -350,6 +356,7 @@ function Navbar() {
                     key={link.path}
                     to={link.path}
                     className={getMobileLinkClasses}
+                    onClick={closeMobileMenu}
                   >
                     <Icon className="h-5 w-5" />
                     {link.label}
@@ -358,14 +365,22 @@ function Navbar() {
               })}
 
               {isAuthenticated && (
-                <NavLink to="/bookmarks" className={getMobileLinkClasses}>
+                <NavLink
+                  to="/bookmarks"
+                  className={getMobileLinkClasses}
+                  onClick={closeMobileMenu}
+                >
                   <Bookmark className="h-5 w-5" />
                   Bookmarks
                 </NavLink>
               )}
 
               {isAuthenticated && isAdmin && (
-                <NavLink to="/admin" className={getMobileLinkClasses}>
+                <NavLink
+                  to="/admin"
+                  className={getMobileLinkClasses}
+                  onClick={closeMobileMenu}
+                >
                   <LayoutDashboard className="h-5 w-5" />
                   Admin Dashboard
                 </NavLink>
@@ -398,6 +413,7 @@ function Navbar() {
               <div className="grid grid-cols-2 gap-3">
                 <Link
                   to="/signin"
+                  onClick={closeMobileMenu}
                   className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border bg-card px-4 text-sm font-semibold transition hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <LogIn className="h-4 w-4" />
@@ -406,6 +422,7 @@ function Navbar() {
 
                 <Link
                   to="/signup"
+                  onClick={closeMobileMenu}
                   className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <UserPlus className="h-4 w-4" />
