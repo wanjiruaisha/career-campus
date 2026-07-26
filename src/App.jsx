@@ -6,7 +6,7 @@ import AdminLayout from "@/layouts/AdminLayout";
 import Home from "@/pages/Home";
 import Articles from "@/pages/Articles";
 import ArticleDetails from "@/pages/ArticleDetails";
-import Coaches from "@/pages/Coaches";
+import CareerQuiz from "@/pages/CareerQuiz";
 import Contact from "@/pages/Contact";
 import Bookmarks from "@/pages/Bookmarks";
 import SignIn from "@/pages/SignIn";
@@ -28,9 +28,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/articles" element={<Articles />} />
         <Route path="/articles/:id" element={<ArticleDetails />} />
-        <Route path="/coaches" element={<Coaches />} />
+        <Route path="/career-quiz" element={<CareerQuiz />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/bookmarks" element={<Bookmarks />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
