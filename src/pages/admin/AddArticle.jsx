@@ -1,22 +1,15 @@
 import { useEffect, useState } from "react";
-import {
-  Controller,
-  useForm,
-} from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { articleSchema } from "@/validation/articleSchema";
 import { storage } from "@/firebase/firebase";
-import { addArticle } from "@/services/articleService";
+import { addArticle, createUniqueFileName } from "@/services/articleService";
 
 import {
   Card,
@@ -131,22 +124,15 @@ export default function AddArticle() {
     setLoading(true);
 
     try {
-      const safeFileName = thumbnail.name
-        .replace(/\s+/g, "-")
-        .replace(/[^a-zA-Z0-9._-]/g, "");
-
-      const uniqueFileName = `${Date.now()}-${safeFileName}`;
-
+      const uniqueFileName = createUniqueFileName(thumbnail.name);
       const thumbnailReference = ref(
         storage,
-        `article-thumbnails/${uniqueFileName}`
+        `article-thumbnails/${uniqueFileName}`,
       );
 
       await uploadBytes(thumbnailReference, thumbnail);
 
-      const thumbnailUrl = await getDownloadURL(
-        thumbnailReference
-      );
+      const thumbnailUrl = await getDownloadURL(thumbnailReference);
 
       const articleData = {
         title: values.title.trim(),
@@ -175,8 +161,7 @@ export default function AddArticle() {
       console.error("Failed to publish article:", error);
 
       toast.error(
-        error?.message ||
-          "Failed to publish the article. Please try again."
+        error?.message || "Failed to publish the article. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -204,10 +189,7 @@ export default function AddArticle() {
           >
             {/* Article title */}
             <div className="space-y-2">
-              <label
-                htmlFor="title"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="title" className="text-sm font-medium">
                 Article Title
               </label>
 
@@ -229,9 +211,7 @@ export default function AddArticle() {
 
             {/* Category */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Category
-              </label>
+              <label className="text-sm font-medium">Category</label>
 
               <Controller
                 name="category"
@@ -242,18 +222,13 @@ export default function AddArticle() {
                     onValueChange={field.onChange}
                     disabled={loading}
                   >
-                    <SelectTrigger
-                      aria-invalid={Boolean(errors.category)}
-                    >
+                    <SelectTrigger aria-invalid={Boolean(errors.category)}>
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
 
                     <SelectContent>
                       {categories.map((category) => (
-                        <SelectItem
-                          key={category}
-                          value={category}
-                        >
+                        <SelectItem key={category} value={category}>
                           {category}
                         </SelectItem>
                       ))}
@@ -271,10 +246,7 @@ export default function AddArticle() {
 
             {/* Summary */}
             <div className="space-y-2">
-              <label
-                htmlFor="summary"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="summary" className="text-sm font-medium">
                 Summary
               </label>
 
@@ -296,10 +268,7 @@ export default function AddArticle() {
 
             {/* Thumbnail */}
             <div className="space-y-3">
-              <label
-                htmlFor="thumbnail"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="thumbnail" className="text-sm font-medium">
                 Thumbnail Image
               </label>
 
@@ -312,8 +281,7 @@ export default function AddArticle() {
               />
 
               <p className="text-sm text-muted-foreground">
-                Select a JPG, PNG, WEBP, or another image smaller
-                than 5 MB.
+                Select a JPG, PNG, WEBP, or another image smaller than 5 MB.
               </p>
 
               {errors.thumbnail && (
@@ -335,10 +303,7 @@ export default function AddArticle() {
 
             {/* Article content */}
             <div className="space-y-2">
-              <label
-                htmlFor="content"
-                className="text-sm font-medium"
-              >
+              <label htmlFor="content" className="text-sm font-medium">
                 Article Content
               </label>
 
@@ -360,9 +325,7 @@ export default function AddArticle() {
 
             {/* Status */}
             <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Status
-              </label>
+              <label className="text-sm font-medium">Status</label>
 
               <Controller
                 name="status"
@@ -373,20 +336,14 @@ export default function AddArticle() {
                     onValueChange={field.onChange}
                     disabled={loading}
                   >
-                    <SelectTrigger
-                      aria-invalid={Boolean(errors.status)}
-                    >
+                    <SelectTrigger aria-invalid={Boolean(errors.status)}>
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
 
                     <SelectContent>
-                      <SelectItem value="Published">
-                        Published
-                      </SelectItem>
+                      <SelectItem value="Published">Published</SelectItem>
 
-                      <SelectItem value="Draft">
-                        Draft
-                      </SelectItem>
+                      <SelectItem value="Draft">Draft</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
