@@ -1,34 +1,38 @@
 # Career Compass
 
-Career Compass is a responsive career-discovery blog platform designed to help students and young professionals explore career paths, understand required skills, and make informed decisions about their future.
+Career Compass is a responsive career-discovery platform that helps students and young professionals explore career paths, understand the skills and education required, and make informed career decisions.
 
-The platform provides career guides, learning roadmaps, career comparisons, educational advice, and job-preparation resources in one organized place.
-
-## Problem Being Solved
-
-Career information is often scattered across different websites and social media platforms, making it difficult for students to find clear and reliable guidance.
-
-Career Compass brings useful career information together and allows users to search, filter, read, and save articles based on their interests.
+Users can browse career guides, search and filter articles, complete a career-interest quiz, and save useful articles for later.
 
 ## Features
 
 ### Public Features
 
-* Browse career-related articles
+* Browse career articles
 * Search articles by title or keyword
 * Filter articles by category
-* Read full articles
-* View featured and related articles
+* Read complete career guides
+* View related articles
+* Complete a career-interest quiz
+* Receive career-category recommendations
+* Submit enquiries through the contact form
 * Switch between light, dark, and system themes
-* Responsive design
+* Responsive design for mobile, tablet, and desktop
+
+### Authentication Features
+
+* Create an account
+* Sign in using email and password
+* Sign in with Google
+* Reset a forgotten password
+* Log out securely
+* Maintain the user session after refreshing the page
 
 ### User Features
 
-* Create an account
-* Log in and log out
 * Bookmark articles
-* View saved articles
-* Access a protected profile page
+* Remove bookmarks
+* View saved articles on a protected page
 
 ### Admin Features
 
@@ -36,93 +40,124 @@ Career Compass brings useful career information together and allows users to sea
 * Add new articles
 * Edit existing articles
 * Delete articles
-* Publish or unpublish articles
-* Mark articles as featured
-* View article statistics
+* Upload article thumbnails
+* Save articles as drafts
+* Publish articles
+* View published and draft article totals
 
 ## Technologies Used
 
 * React
 * Vite
-* React Router
+* React Router DOM
 * Redux Toolkit
 * React Redux
 * Firebase Authentication
 * Cloud Firestore
+* Firebase Storage
 * Tailwind CSS
 * shadcn/ui
 * Lucide React
 * React Hook Form
 * Zod
 * Sonner
+* next-themes
 
 ## Project Structure
 
 ```text
 career-compass/
+│
 ├── public/
-│   └── images/
+│   └── data/
+│       └── careerQuiz.json
 │
 ├── src/
+│   ├── assets/
+│   │   └── images/
+│   │
 │   ├── components/
+│   │   ├── admin/
 │   │   ├── ui/
-│   │   ├── layout/
-│   │   ├── articles/
-│   │   ├── routes/
-│   │   ├── theme-provider.jsx
-│   │   └── mode-toggle.jsx
-│   │
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── Articles.jsx
-│   │   ├── ArticleDetails.jsx
-│   │   ├── Bookmarks.jsx
-│   │   ├── Profile.jsx
-│   │   ├── Login.jsx
-│   │   ├── Register.jsx
-│   │   └── admin/
-│   │
-│   ├── store/
-│   │   ├── store.js
-│   │   └── features/
-│   │
-│   ├── context/
-│   │   └── AuthContext.jsx
+│   │   ├── AdminRoute.jsx
+│   │   ├── AuthListener.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── ProtectedRoute.jsx
+│   │   ├── ScrollToTop.jsx
+│   │   ├── ThemeProvider.jsx
+│   │   └── ThemeToggle.jsx
 │   │
 │   ├── firebase/
 │   │   └── firebase.js
 │   │
+│   ├── layouts/
+│   │   ├── AdminLayout.jsx
+│   │   └── MainLayout.jsx
+│   │
+│   ├── pages/
+│   │   ├── admin/
+│   │   │   ├── AddArticle.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── EditArticle.jsx
+│   │   │   └── ManageArticles.jsx
+│   │   ├── ArticleDetails.jsx
+│   │   ├── Articles.jsx
+│   │   ├── Bookmarks.jsx
+│   │   ├── CareerQuiz.jsx
+│   │   ├── Contact.jsx
+│   │   ├── ForgotPassword.jsx
+│   │   ├── Home.jsx
+│   │   ├── SignIn.jsx
+│   │   └── SignUp.jsx
+│   │
 │   ├── services/
-│   ├── lib/
+│   │   ├── articleService.js
+│   │   └── authService.js
+│   │
+│   ├── store/
+│   │   ├── articleSlice.js
+│   │   ├── authSlice.js
+│   │   ├── bookmarkSlice.js
+│   │   └── store.js
+│   │
+│   ├── validation/
+│   │   ├── articleSchema.js
+│   │   └── authSchema.js
+│   │
 │   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
+│   ├── index.css
+│   └── main.jsx
 │
-├── .env.local
+├── .env
+├── .gitignore
 ├── components.json
+├── eslint.config.js
+├── index.html
+├── jsconfig.json
 ├── package.json
-├── vite.config.js
-└── README.md
+├── README.md
+└── vite.config.js
 ```
 
 ## Getting Started
 
-### 1. Clone the repository
+### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/wanjiruaisha/career-campus.git>
 cd career-compass
 ```
 
-### 2. Install dependencies
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Create an environment file
+### 3. Create the Environment File
 
-Create a `.env.local` file in the root folder:
+Create a `.env` file in the project root:
 
 ```env
 VITE_FIREBASE_API_KEY=your_api_key
@@ -133,47 +168,35 @@ VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
 VITE_FIREBASE_APP_ID=your_app_id
 ```
 
-Do not upload `.env.local` to GitHub.
+Do not upload the `.env` file to GitHub.
 
-### 4. Start the project
+### 4. Configure Firebase
+
+Enable the following Firebase services:
+
+* Email and password authentication
+* Google authentication
+* Cloud Firestore
+* Firebase Storage
+
+Create these Firestore collections:
+
+```text
+articles
+users
+```
+
+### 5. Start the Development Server
 
 ```bash
 npm run dev
 ```
 
-## Firebase Services
-
-The project uses Firebase for:
-
-* User registration and login
-* Authentication session management
-* Article storage
-* User profiles
-* Bookmarks
-* Administrator permissions
-
-The main Firestore collections are:
+Open the local URL displayed in the terminal, usually:
 
 ```text
-articles
-users
-admins
+http://localhost:5173
 ```
-
-User bookmarks are stored inside each user document as a subcollection.
-
-## Redux State Management
-
-Redux Toolkit manages shared application state such as:
-
-* Articles
-* Search and category filters
-* Loading states
-* Error states
-* Bookmarks
-* Admin article operations
-
-Asynchronous Firebase operations are handled using `createAsyncThunk`.
 
 ## Available Scripts
 
@@ -183,7 +206,7 @@ Start the development server:
 npm run dev
 ```
 
-Build the project:
+Create a production build:
 
 ```bash
 npm run build
@@ -195,38 +218,177 @@ Preview the production build:
 npm run preview
 ```
 
-Run linting:
+Run ESLint:
 
 ```bash
 npm run lint
 ```
 
+## Collaboration
+
+Follow these steps when working with other contributors.
+
+### 1. Get the Latest Version
+
+Clone the project when working on it for the first time:
+
+```bash
+git clone <https://github.com/wanjiruaisha/career-campus.git>
+cd career-compass
+npm install
+```
+
+When the project already exists on your computer, switch to the main branch and download the latest changes:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+### 2. Create a New Branch
+
+Do not work directly on the `main` branch.
+
+Create a branch for the feature or fix you are working on:
+
+```bash
+git checkout -b feature/article-search
+```
+
+Other branch-name examples:
+
+```text
+feature/career-quiz
+feature/bookmarks
+fix/navbar-mobile-menu
+fix/article-loading-error
+```
+
+### 3. Make Your Changes
+
+Update the necessary files and test the application:
+
+```bash
+npm run dev
+```
+
+Before submitting your work, also run:
+
+```bash
+npm run lint
+npm run build
+```
+
+### 4. Commit Your Changes
+
+Check which files were changed:
+
+```bash
+git status
+```
+
+Add the changed files:
+
+```bash
+git add .
+```
+
+Create a clear commit:
+
+```bash
+git commit -m "Add article search functionality"
+```
+
+### 5. Push Your Branch
+
+```bash
+git push origin feature/article-search
+```
+
+### 6. Create a Pull Request
+
+After pushing:
+
+1. Open the repository on GitHub.
+2. Select **Compare & pull request**.
+3. Choose `main` as the base branch.
+4. Add a clear title and description.
+5. Explain what was changed and how it was tested.
+6. Submit the pull request for review.
+
+Do not merge the pull request until the changes have been reviewed.
+
+### 7. Update Your Branch
+
+When the main branch changes before your work is merged:
+
+```bash
+git checkout main
+git pull origin main
+git checkout feature/article-search
+git merge main
+```
+
+Resolve any merge conflicts, test the project again, and push the updated branch:
+
+```bash
+git push origin feature/article-search
+```
+
+## Contribution Guidelines
+
+Contributions are welcome.
+
+Before contributing:
+
+* Create a separate branch for each feature or fix
+* Follow the existing project structure
+* Avoid changing unrelated files
+* Use clear component and variable names
+* Test the project before creating a pull request
+* Do not commit `.env` files or private Firebase credentials
+* Write clear commit messages
+* Describe your changes clearly in the pull request
+
+A useful pull-request description should include:
+
+```text
+## Changes
+
+- Added article search
+- Added an empty search-results state
+- Improved mobile responsiveness
+
+## Testing
+
+- Tested search using article titles
+- Tested search using keywords
+- Ran npm run lint
+- Ran npm run build
+```
+
 ## Future Improvements
 
-* Add Google authentication
-* Add email verification and password reset
-* Create a career recommendation quiz
-* Add a career comparison tool
+* Add a career-coaches directory
+* Add coach profiles and areas of expertise
+* Add coach-contact or consultation requests
+* Add a career-comparison tool
 * Add article comments and reactions
-* Add article view tracking
-* Add reading history
 * Add internship and scholarship listings
+* Add article-view tracking
+* Add reading history
 * Add an advanced admin analytics dashboard
-* Add charts showing article performance
-* Add a rich-text editor for creating articles
-* Support article image uploads using Firebase Storage
 * Add newsletter subscriptions
-* Add notifications for newly published articles
-* Add user profile customization
-* Add personalized article recommendations
+* Add notifications for new articles
+* Add personalised article recommendations
 * Add pagination or infinite scrolling
-* Add article drafts and scheduled publishing
+* Add scheduled article publishing
+* Add more career-quiz questions
+* Allow administrators to manage quiz questions
+ 
+ ## Author
+ **Aisha Wanjiru**
 
-
-## Project Status
-
-The project is currently under development.
 
 ## License
-
-Licensed under the MIT license
+This project is licensed under the MIT License.
