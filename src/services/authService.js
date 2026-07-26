@@ -30,7 +30,7 @@ googleProvider.setCustomParameters({
 /**
  * Creates a Firestore user document when one does not exist.
  */
-async function createUserDocument(user, fullName = "") {
+ async function createUserDocument(user, fullName = "") {
   if (!user?.uid) {
     throw new Error(
       "Cannot create user document because the user ID is missing."
