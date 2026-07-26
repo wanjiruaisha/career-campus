@@ -16,6 +16,16 @@ import { db } from "@/firebase/firebase";
 
 const articlesRef = collection(db, "articles");
 
+export function createUniqueFileName(fileName) {
+  const safeFileName = fileName
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]/g, "");
+
+  return `${Date.now()}-${safeFileName || "thumbnail"}`;
+}
+
+
 /**
  * Create a new article
  */
@@ -147,3 +157,5 @@ export async function getPublishedArticles() {
     return secondDate - firstDate;
   });
 }
+
+
