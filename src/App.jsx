@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 import MainLayout from "@/layouts/MainLayout";
 import AdminLayout from "@/layouts/AdminLayout";
@@ -12,18 +12,19 @@ import Bookmarks from "@/pages/Bookmarks";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
 import ForgotPassword from "@/pages/ForgotPassword";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import AdminRoute from "@/components/AdminRoute";
-
 
 import Dashboard from "@/pages/admin/Dashboard";
 import ManageArticles from "@/pages/admin/ManageArticles";
 import AddArticle from "@/pages/admin/AddArticle";
 import EditArticle from "@/pages/admin/EditArticle";
 
+import ProtectedRoute from "@/components/ProtectedRoute";
+import AdminRoute from "@/components/AdminRoute";
+
 export default function App() {
   return (
     <Routes>
+      {/* Public and user pages */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/articles" element={<Articles />} />
@@ -33,44 +34,32 @@ export default function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        {/* Protected user page */}
+        <Route
+          path="/bookmarks"
+          element={
+            <ProtectedRoute>
+              <Bookmarks />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
-     {/* Bookmarks — any signed-in user */}
-<Route
-  path="bookmarks"
-  element={
-    <ProtectedRoute>
-      <Bookmarks />
-    </ProtectedRoute>
-  }
-/>
-
-{/* Admin pages — admin user only */}
-<Route
-  path="/admin"
-  element={
-    <AdminRoute>
-      <AdminLayout />
-    </AdminRoute>
-  }
->
-  <Route index element={<Dashboard />} />
-
-  <Route
-    path="articles"
-    element={<ManageArticles />}
-  />
-
-  <Route
-    path="articles/new"
-    element={<AddArticle />}
-  />
-
-  <Route
-    path="articles/edit/:id"
-    element={<EditArticle />}
-  />
-</Route>
+      {/* Protected admin pages */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="articles" element={<ManageArticles />} />
+        <Route path="articles/new" element={<AddArticle />} />
+        <Route path="articles/edit/:id" element={<EditArticle />} />
+      </Route>
     </Routes>
   );
 }
