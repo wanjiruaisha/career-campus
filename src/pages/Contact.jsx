@@ -89,7 +89,6 @@ function Contact() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(contactSchema),
-
     defaultValues: {
       fullName: "",
       email: "",
@@ -98,18 +97,19 @@ function Contact() {
     },
   });
 
-const message =
-  useWatch({
-    control,
-    name: "message",
-    defaultValue: "",
-  }) || "";
-  async function onSubmit(values) {
+  const message =
+    useWatch({
+      control,
+      name: "message",
+      defaultValue: "",
+    }) || "";
+
+  function onSubmit(values) {
     try {
       setSending(true);
 
       const emailSubject = encodeURIComponent(
-        `[Career Compass] ${values.subject}`
+        `[Career Compass] ${values.subject}`,
       );
 
       const emailBody = encodeURIComponent(
@@ -119,7 +119,7 @@ My name is ${values.fullName}.
 
 ${values.message}
 
-Reply email: ${values.email}`
+Reply email: ${values.email}`,
       );
 
       const mailtoLink =
@@ -127,7 +127,7 @@ Reply email: ${values.email}`
         `?subject=${emailSubject}` +
         `&body=${emailBody}`;
 
-      window.location.href = mailtoLink;
+      window.open(mailtoLink, "_self");
 
       toast.success("Your email app is opening.");
 
@@ -135,11 +135,9 @@ Reply email: ${values.email}`
     } catch (error) {
       console.error("Failed to prepare message:", error);
 
-      toast.error(
-        "We could not prepare your message. Please try again."
-      );
+      toast.error("We could not prepare your message. Please try again.");
     } finally {
-      window.setTimeout(() => {
+      setTimeout(() => {
         setSending(false);
       }, 700);
     }
@@ -153,7 +151,7 @@ Reply email: ${values.email}`
 
       toast.success("Email address copied.");
 
-      window.setTimeout(() => {
+      setTimeout(() => {
         setEmailCopied(false);
       }, 2000);
     } catch (error) {
@@ -176,7 +174,6 @@ Reply email: ${values.email}`
         <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:py-24">
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-200/80 bg-white/70 px-4 py-2 text-sm font-semibold text-blue-700 shadow-sm backdrop-blur-xl dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300">
             <Sparkles className="h-4 w-4" />
-
             We would love to hear from you
           </div>
 
@@ -192,9 +189,8 @@ Reply email: ${values.email}`
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-            Send us your question, feedback, or career-guide
-            suggestion. Career Compass is here to make your next
-            step feel clearer.
+            Send us your question, feedback, or career-guide suggestion. Career
+            Compass is here to make your next step feel clearer.
           </p>
         </div>
       </section>
@@ -217,9 +213,7 @@ Reply email: ${values.email}`
                     <Icon className="h-6 w-6" />
                   </div>
 
-                  <h2 className="mt-5 text-lg font-bold">
-                    {option.title}
-                  </h2>
+                  <h2 className="mt-5 text-lg font-bold">{option.title}</h2>
 
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
                     {option.description}
@@ -248,12 +242,12 @@ Reply email: ${values.email}`
               </h2>
 
               <p className="mt-4 max-w-lg leading-7 text-muted-foreground">
-                Include as much detail as possible so your question
-                is easier to understand and respond to.
+                Include as much detail as possible so your question is easier to
+                understand and respond to.
               </p>
             </div>
 
-            {/* Glass email card */}
+            {/* Email card */}
             <div className="overflow-hidden rounded-3xl border border-white/70 bg-gradient-to-br from-blue-600 to-indigo-700 p-1 shadow-2xl shadow-blue-950/15 dark:border-white/10">
               <div className="rounded-[1.35rem] border border-white/15 bg-white/10 p-6 text-white backdrop-blur-xl">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15">
@@ -291,23 +285,18 @@ Reply email: ${values.email}`
                 </div>
 
                 <div>
-                  <h3 className="font-bold">
-                    Response expectations
-                  </h3>
+                  <h3 className="font-bold">Response expectations</h3>
 
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Messages are reviewed as soon as possible.
-                    Detailed questions may require more time to
-                    respond to properly.
+                    Messages are reviewed as soon as possible. Detailed
+                    questions may require more time to respond to properly.
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="rounded-3xl border bg-primary/5 p-6">
-              <h3 className="font-bold">
-                Before sending your message
-              </h3>
+              <h3 className="font-bold">Before sending your message</h3>
 
               <div className="mt-4 space-y-3">
                 {[
@@ -320,7 +309,6 @@ Reply email: ${values.email}`
                     className="flex items-start gap-3 text-sm text-muted-foreground"
                   >
                     <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
-
                     <span>{item}</span>
                   </div>
                 ))}
@@ -343,8 +331,8 @@ Reply email: ${values.email}`
                 </h2>
 
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                  Complete the form and your device’s email
-                  application will prepare the message for you.
+                  Complete the form and your device’s email application will
+                  prepare the message for you.
                 </p>
               </div>
 
@@ -356,9 +344,7 @@ Reply email: ${values.email}`
                 <div className="grid gap-5 sm:grid-cols-2">
                   {/* Full name */}
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">
-                      Full name
-                    </Label>
+                    <Label htmlFor="fullName">Full name</Label>
 
                     <Input
                       id="fullName"
@@ -383,9 +369,7 @@ Reply email: ${values.email}`
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <Label htmlFor="email">
-                      Email address
-                    </Label>
+                    <Label htmlFor="email">Email address</Label>
 
                     <Input
                       id="email"
@@ -411,9 +395,7 @@ Reply email: ${values.email}`
 
                 {/* Subject */}
                 <div className="space-y-2">
-                  <Label htmlFor="subject">
-                    Subject
-                  </Label>
+                  <Label htmlFor="subject">Subject</Label>
 
                   <Input
                     id="subject"
@@ -438,9 +420,7 @@ Reply email: ${values.email}`
                 {/* Message */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-4">
-                    <Label htmlFor="message">
-                      Message
-                    </Label>
+                    <Label htmlFor="message">Message</Label>
 
                     <span className="text-xs text-muted-foreground">
                       {message.length}/1500
@@ -487,8 +467,8 @@ Reply email: ${values.email}`
                 </Button>
 
                 <p className="text-center text-xs leading-5 text-muted-foreground">
-                  Do not include passwords, payment information, or
-                  other sensitive personal details.
+                  Do not include passwords, payment information, or other
+                  sensitive personal details.
                 </p>
               </form>
             </div>
@@ -509,8 +489,8 @@ Reply email: ${values.email}`
             </h2>
 
             <p className="mx-auto mt-4 max-w-2xl leading-7 text-muted-foreground">
-              Explore Career Compass guides before sending your
-              question. The answer may already be waiting for you.
+              Explore Career Compass guides before sending your question. The
+              answer may already be waiting for you.
             </p>
 
             <Link
@@ -518,7 +498,6 @@ Reply email: ${values.email}`
               className="mt-7 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-semibold text-primary-foreground shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700"
             >
               Explore Career Guides
-
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
